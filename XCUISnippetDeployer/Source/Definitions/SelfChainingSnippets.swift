@@ -261,8 +261,8 @@ final class <#ClassName#>: BaseScreen {
 
     private static func protocolTemplate() -> Snippet {
         return Snippet(
-            title: "SelfChainingExample",
-            description: "Example for self-chaining pattern.",
+            title: "Protocol Template",
+            description: "Protocol Template for Self-Chaining pattern.",
             content:
 """
 import Foundation
