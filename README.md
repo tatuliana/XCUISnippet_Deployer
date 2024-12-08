@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `XCUISnippetDeployer` complements the `XCUIBuilder` tool by extending its functionality. It enhances the workflow by deploying code snippets to simplify and accelerate the development of additional tests after the initial framework deployment by `XCUIBuilder`.
+The `XCUISnippetDeployer` complements the [XCUIBuilder](https://github.com/tatuliana/XCUIBuilder) tool by extending its functionality. It enhances the workflow by deploying code snippets to simplify and accelerate the development of additional tests after the initial framework deployment by `XCUIBuilder`.
 
 The `XCUISnippetDeployer` is a command-line tool that simplifies the creation and deployment of Xcode code snippets. By leveraging this tool, developers can quickly deploy pre-defined sets of code snippets into Xcode's environment, improving productivity and ensuring consistent coding practices.
 
