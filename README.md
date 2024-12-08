@@ -26,7 +26,7 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation an
 
 - macOS system with Xcode installed.
 
-- Access to the ~/Library/Developer/Xcode/UserData/CodeSnippets/ directory.
+- Access to the `~/Library/Developer/Xcode/UserData/CodeSnippets/` directory.
 
 ## Installation
 
