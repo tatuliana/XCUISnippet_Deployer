@@ -25,7 +25,7 @@ func main() {
     let selectedPattern = SnippetPattern.allCases[patternIndex - 1]
     print("Selected Pattern: \(selectedPattern.rawValue)")
 
-    let snippets = SnippetDefinitions.getSnippets(for: selectedPattern)
+    let snippets = SnippetDefinitions.getSnippets(for: selectedPattern) + SharedSnippets.getAll()
     FileManagerHelper.save(snippets: snippets, pattern: selectedPattern)
 }
 

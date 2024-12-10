@@ -22,8 +22,7 @@ class ScreenTransitionChainingSnippets {
             enterText(),
             screenTemplate(),
             protocolTemplate(),
-            assertElementState(),
-            documentation()
+            assertElementState()
         ]
     }
     
@@ -124,6 +123,7 @@ func tap<#ElementName#><T>(screen: T.Type) -> T where T: BaseScreen {
 ///     ```swift
 ///    <#screenName#>.assert<#ElementName#>Exists(expected: false)
 ///     ```
+@discardableResult
 func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#>", state: .exists, expected: result) {
         <#elementName#>.assert(state: .exists, expected: result)
@@ -153,6 +153,7 @@ func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
 ///     ```swift
 ///    <#screenName#>.assert<#ElementQuery#>Exists(index: 5, expected: false)
 ///     ```
+@discardableResult
 func assert<#ElementQuery#>Exists(index: Int = 0, expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#> at \\(index)", state: .exists, expected: result) {
         <#elementQuery#>.assert(state: .exists, expected: result)
@@ -181,6 +182,7 @@ func assert<#ElementQuery#>Exists(index: Int = 0, expected result: Bool = true) 
 ///     ```swift
 ///    <#screenName#>.assert<#ElementName#>IsEnabled(expected: false)
 ///     ```
+@discardableResult
 func assert<#ElementName#>IsEnabled(expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#>", state: .enabled, expected: result) {
         <#elementName#>.assert(state: .enabled, expected: result)
@@ -209,6 +211,7 @@ func assert<#ElementName#>IsEnabled(expected result: Bool = true) -> Self {
 ///     ```swift
 ///    <#screenName#>.assert<#ElementName#>IsSelected(expected: false)
 ///     ```
+@discardableResult
 func assert<#ElementName#>IsSelected(expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#>", state: .selected, expected: result) {
         <#elementName#>.assert(state: .selected, expected: result)
@@ -413,25 +416,6 @@ func assert<#elementName#>(state: ElementState, expected result: Bool = true) ->
         return self
     }
 }
-"""
-        )
-    }
-    
-    private static func documentation() -> Snippet {
-        return Snippet(
-            title: "Documentation",
-            description: "Documentation template",
-            content:
-"""
-/// Summary text for documentation
-/// - parameter <#parameterName#>: <#Description#>
-/// - parameter <#parameterName#>: <#Description#>
-/// - returns: <#Return values#>
-/// - warning: <#Warning if any#>
-///
-/// # Notes: #
-///
-/// - <#Notes if any#>
 """
         )
     }
