@@ -85,9 +85,9 @@ runActivity(element: "<#Element description#>", state: .<#ElementState#>, expect
             description: "Activity to use in assertion for label, value or placeholderValue to be equal to expected result" ,
             content:
 """
-    runActivity(element: "<#Element description#>", property: .<#Properties#>, equalTo: "<#Expected Result#>", expected: result) {
-        <#code#>
-    }
+runActivity(element: "<#Element description#>", property: .<#Properties#>, equalTo: "<#Expected Result#>", expected: result) {
+    <#code#>
+}
 """
         )
     }
