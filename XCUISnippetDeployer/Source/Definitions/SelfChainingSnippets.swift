@@ -19,7 +19,10 @@ class SelfChainingSnippets {
             enterText(),
             screenTemplate(),
             protocolTemplate(),
-            assertElementState()
+            turnSwitch(),
+            assertValueEqual(),
+            assertLabelEqual(),
+            assertPlaceholderValueEqual()
         ]
     }
     
@@ -319,30 +322,114 @@ extension <#ProtocolName#> where Self: BaseScreen {
 """
         )
     }
-
-    private static func assertElementState() -> Snippet {
+    
+    private static func turnSwitch() -> Snippet {
         return Snippet(
-            title: "Assert Element State func",
-            description: "Asserts the element state. Returns self for chaining.",
+            title: "Turn switch func",
+            description: "Turns switch on/off.",
             content:
 """
-/// Asserts the <#elementName#>  state.
-/// - parameter state: `ElementState`. An enum to choose the element state to assert.
+/// Turn the <#switchName#> to the state selected from the `SwitchState` enum
+/// - parameter state: `SwitchState`. An enum to select the state  from
+/// - returns: Self. Returns self for the chaining purpose
+@discardableResult
+func turn<#switchName#>(_ state: SwitchState) -> Self {
+    runActivity(.step, "Turn the `<#switchName#>` `\\(state.rawValue)`") {
+        <#switchName#>.turnSwitch(state: state)
+        return self
+    }
+}
+"""
+        )
+    }
+
+    private static func assertValueEqual() -> Snippet {
+        return Snippet(
+            title: "Assert Value func",
+            description: "Asserts if the value is equal to the expected value. Returns self for chaining.",
+            content:
+"""
+/// Asserts if the `<#elementName#>` value is equal to the expected.
+/// - parameter equalTo: String. An expected value of the <#elementName#>
 /// - parameter expected: `Bool`. The expected result, which is `true` by default.
 /// - returns: Self. Returns self for the chaining purpose
 /// - _Examples:_
-///   - To verify the element exists:
+///   - To verify the element value is equal to expected:
 ///     ```swift
-///        .assert<#elementName#>(state: ElementState)
+///        .assert<#ElementName#>Value(equalTo: "expectedResultString")
 ///     ```
-///   - To verify the element doesn't exist:
+///   - To verify the element value is not equal to expected:
 ///     ```swift
-///        .assert<#elementName#>(state: ElementState, expected: false))
+///        .assert<#ElementName#>Value(equalTo: "expectedResultString", expected: false)
 ///     ```
 @discardableResult
-func assert<#elementName#>(state: ElementState, expected result: Bool = true) -> Self {
-    runActivity(element: "<#element description#>", state: state, expected: result) {
-        <#elementName#>.assert(state: state, result: result)
+func assert<#ElementName#>Value(equalTo: String, expected result: Bool = true) -> Self {
+    runActivity(element: "<#elementName#>", property: .value, equalTo: equalTo, expected: result) {
+        if BaseScreen.app.<#elementType#>.value(containing: equalTo).firstMatch.wait() {
+            // Intentionally left blank, please DO NOT REMOVE!
+            // Waiting for the text field value to change from empty to actual value recieved from the backend
+        }
+        <#elementName#>.assert(for: .value, equalTo: equalTo)
+        return self
+    }
+}
+"""
+        )
+    }
+    
+    private static func assertLabelEqual() -> Snippet {
+        return Snippet(
+            title: "Assert Label func",
+            description: "Asserts if the label is equal to the expected value. Returns self for chaining.",
+            content:
+"""
+/// Asserts if the `<#elementName#>` label is equal to the expected.
+/// - parameter equalTo: String. An expected label of the <#elementName#>
+/// - parameter expected: `Bool`. The expected result, which is `true` by default.
+/// - returns: Self. Returns self for the chaining purpose
+/// - _Examples:_
+///   - To verify the element label is equal to expected:
+///     ```swift
+///        .assert<#ElementName#>Label(equalTo: "expectedResultString")
+///     ```
+///   - To verify the element label is equal to expected:
+///     ```swift
+///        .assert<#ElementName#>Label(equalTo: "expectedResultString", expected: false)
+///     ```
+@discardableResult
+func assert<#ElementName#>Label(equalTo: String, expected result: Bool = true) -> Self {
+    runActivity(element: "<#elementName#>", property: .label, equalTo: equalTo, expected: result) {
+        <#elementName#>.assert(for: .label, equalTo: equalTo)
+        return self
+    }
+}
+"""
+        )
+    }
+
+    private static func assertPlaceholderValueEqual() -> Snippet {
+        return Snippet(
+            title: "Assert placeholderValue func",
+            description: "Asserts if the placeholderValue is equal to the expected value. Returns self for chaining.",
+            content:
+"""
+/// Asserts if the `<#elementName#>` placeholderValue is equal to the expected.
+/// - parameter equalTo: String. An expected placeholderValue of the <#elementName#>
+/// - parameter expected: `Bool`. The expected result, which is `true` by default.
+/// - returns: Self. Returns self for the chaining purpose
+/// - _Examples:_
+///   - To verify the element placeholderValue is equal to expected:
+///     ```swift
+///        .assert<#ElementName#>PlaceholderValue(equalTo: "expectedResultString")
+///     ```
+///   - To verify the element placeholderValue is equal to expected:
+///     ```swift
+///        .assert<#ElementName#>PlaceholderValue(equalTo: "expectedResultString", expected: false)
+///     ```
+@discardableResult
+func assert<#ElementName#>PlaceholderValue(equalTo: String, expected result: Bool = true) -> Self {
+    runActivity(element: "<#elementName#>", property: .placeholderValue, equalTo: equalTo, expected: result) {
+        <#elementName#>.assert(for: .placeholderValue, equalTo: equalTo)
         return self
     }
 }
