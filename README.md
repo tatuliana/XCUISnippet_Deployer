@@ -18,6 +18,12 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation, d
 
 - Supports deleting previously deployed snippets via the CLI.
 
+- Snippets are tagged by pattern and prefixed with `[STC]` or `[SC]` in Xcode's snippet library for easy identification.
+
+- Pattern-aware completion prefixes (`stc.` / `sc.`) allow quick filtering when typing in Xcode.
+
+- Built-in migration support for users upgrading from v1.0.
+
 - Uses Xcode-compliant Property List (plist) format for seamless integration.
 
 - Ensures each snippet is assigned a unique identifier (UUID).
@@ -52,7 +58,7 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation, d
 
     - Select a pattern by entering the corresponding number.
 
-    - Select an action: deploy, update, or delete snippets.
+    - Select an action: deploy, update, delete, or delete legacy snippets.
 
     - Press Enter to confirm your selection.
 
@@ -67,6 +73,7 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation, d
     - **1. Deploy** — performs the initial deployment of snippets.
     - **2. Update** — replaces existing snippets that share the same title with the latest version.
     - **3. Delete** — removes previously deployed snippets.
+    - **4. Delete legacy snippets (v1.0)** — removes snippets deployed with v1.0 to allow a clean v2.0 deployment.
 
 4. Restart Xcode to see the changes reflected in the snippet manager (`Command + Shift + L`).
 
@@ -131,6 +138,18 @@ Each `.codesnippet` file is generated in plist format and includes the following
 
 - **IDECodeSnippetVersion**: The snippet version.
 
+- **XCUIBuilderPattern**: The pattern the snippet belongs to (`Screen Transition Chaining` or `Self-Chaining`). Used internally to scope operations per pattern.
+
+## Upgrading from v1.0
+
+v2.0 snippets include a `XCUIBuilderPattern` tag and a pattern prefix (`[STC]` / `[SC]`) in the title that v1.0 snippets do not have. To upgrade:
+
+1. Run the tool and select your pattern.
+2. Choose **4. Delete legacy snippets (v1.0)** to remove the old snippets.
+3. Choose **1. Deploy** to deploy the v2.0 snippets.
+
+Alternatively, during Deploy the tool will detect legacy snippets and prompt you to delete them automatically before proceeding.
+
 ## Troubleshooting
 
 ### Snippets Not Appearing in Xcode
@@ -152,6 +171,11 @@ Contributions are welcome! If you have suggestions or want to add new snippet pa
 ### v2.0
 - Added **Update** option: replaces existing snippets that share the same title with the latest version.
 - Added **Delete** option: removes previously deployed snippets via the CLI.
+- Added **Delete legacy snippets (v1.0)** option: dedicated migration path for users upgrading from v1.0.
+- Snippets are now tagged with `XCUIBuilderPattern` so operations are fully scoped per pattern — both patterns can coexist independently.
+- Snippet titles are now prefixed with `[STC]` / `[SC]` for visual grouping in Xcode's snippet library.
+- Completion prefixes are now pattern-aware (`stc.` / `sc.`) to avoid mixing snippets when typing.
+- Error handling added: deploy blocks if already deployed, update/delete block if nothing is deployed.
 - Fixed missing snippets in Screen Transition Chaining pattern (`Protocol with enum`, `Turn switch`, `Test func`).
 - Fixed `assertExistsAtIndex` — index parameter is now correctly applied to the element query in both patterns.
 - Fixed incorrect parameter label in `assertElementState` (`result:` → `expected:`).

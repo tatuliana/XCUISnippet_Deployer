@@ -30,6 +30,7 @@ func main() {
         1. Deploy snippets (initial deployment)
         2. Update snippets (replace existing ones if they have the same title)
         3. Delete previously deployed snippets
+        4. Delete legacy snippets (v1.0)
         """)
     
     guard let input = readLine() else {
@@ -51,7 +52,11 @@ func main() {
     case "3":
         print("Deleting previously deployed snippets...")
         FileManagerHelper.delete(snippets: snippets, pattern: selectedPattern)
-        
+
+    case "4":
+        print("Deleting legacy v1.0 snippets...")
+        FileManagerHelper.deleteLegacy(snippets: snippets, pattern: selectedPattern)
+
     default:
         print("Invalid input. Exiting.")
     }
