@@ -6,7 +6,7 @@
 
 The `XCUISnippetDeployer` complements the [XCUIBuilder](https://github.com/tatuliana/XCUIBuilder) tool by extending its functionality. It enhances the workflow by deploying code snippets to simplify and accelerate the development of additional tests after the initial framework deployment by `XCUIBuilder`.
 
-The `XCUISnippetDeployer` is a command-line tool that simplifies the creation and deployment of Xcode code snippets. By leveraging this tool, developers can quickly deploy pre-defined sets of code snippets into Xcode's environment, improving productivity and ensuring consistent coding practices.
+The `XCUISnippetDeployer` is a command-line tool that simplifies the creation, deployment, update, and deletion of Xcode code snippets. By leveraging this tool, developers can quickly deploy pre-defined sets of code snippets into Xcode's environment, improving productivity and ensuring consistent coding practices.
 
 ## Features
 
@@ -14,11 +14,15 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation an
 
 - Automatically generates and deploys `.codesnippet` files to Xcode's designated folder.
 
+- Supports updating existing snippets by replacing them with the latest version.
+
+- Supports deleting previously deployed snippets via the CLI.
+
 - Uses Xcode-compliant Property List (plist) format for seamless integration.
 
 - Ensures each snippet is assigned a unique identifier (UUID).
 
-- Includes CLI-based interaction for user-friendly deployment.
+- Includes CLI-based interaction for user-friendly snippet management.
 
 - Provides well-defined and organized templates for common XCUITest patterns, tailored to align with the framework architecture for the chosen implementation pattern.
 
@@ -48,6 +52,8 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation an
 
     - Select a pattern by entering the corresponding number.
 
+    - Select an action: deploy, update, or delete snippets.
+
     - Press Enter to confirm your selection.
 
 ### CLI Workflow
@@ -57,18 +63,27 @@ The `XCUISnippetDeployer` is a command-line tool that simplifies the creation an
 
 2. Enter the number corresponding to the desired snippet pattern.
 
-3. The tool will deploy the snippets for the selected pattern into the Xcode `CodeSnippets` directory.
+3. Select an action:
+    - **1. Deploy** — performs the initial deployment of snippets.
+    - **2. Update** — replaces existing snippets that share the same title with the latest version.
+    - **3. Delete** — removes previously deployed snippets.
 
-4. Restart Xcode to see the new snippets in the snippet manager (`Command + Shift + L`).
+4. Restart Xcode to see the changes reflected in the snippet manager (`Command + Shift + L`).
 
 ### Removing Deployed Snippets
 
-To remove previously deployed snippets:
+To remove previously deployed snippets, use the CLI delete option:
+
+1. Run the tool and select a pattern.
+
+2. Choose **3. Delete** to remove all snippets for the selected pattern.
+
+Alternatively, you can remove snippets manually:
 
 1. Navigate to the Xcode `CodeSnippets` directory:
 <img width="554" alt="Screenshot 2024-12-08 at 1 15 24 AM" src="https://github.com/user-attachments/assets/1c629cd7-bb8a-4fa7-90c9-9d21496d70c1">
 
-2. Identify and delete the `.codesnippet` files you wish to remove or remove them using the snippet manager in Xcode.
+2. Identify and delete the `.codesnippet` files you wish to remove, or remove them using the snippet manager in Xcode.
 
 ## Example Snippets
 
@@ -131,6 +146,21 @@ Each `.codesnippet` file is generated in plist format and includes the following
 ## Contributing
 
 Contributions are welcome! If you have suggestions or want to add new snippet patterns, please submit a pull request or open an issue.
+
+## Release Notes
+
+### v2.0
+- Added **Update** option: replaces existing snippets that share the same title with the latest version.
+- Added **Delete** option: removes previously deployed snippets via the CLI.
+- Fixed missing snippets in Screen Transition Chaining pattern (`Protocol with enum`, `Turn switch`, `Test func`).
+- Fixed `assertExistsAtIndex` — index parameter is now correctly applied to the element query in both patterns.
+- Fixed incorrect parameter label in `assertElementState` (`result:` → `expected:`).
+- Fixed protocol/extension signature mismatch in `Protocol Template` for Self-Chaining pattern.
+- Fixed copy-paste errors in `assertForLabel` and `assertForPlaceholderValue` doc examples.
+- Various doc comment corrections and typo fixes.
+
+### v1.0
+- Initial release with **Deploy** option for Screen Transition Chaining and Self-Chaining patterns.
 
 ## License
 

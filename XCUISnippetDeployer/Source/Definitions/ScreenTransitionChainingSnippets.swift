@@ -18,17 +18,20 @@ class ScreenTransitionChainingSnippets {
             assertExistsAtIndex(),
             assertIsEnabled(),
             assertElementIsSelected(),
-            elementNameExistsXCT(),
+            elementExistsXCT(),
             enterText(),
             screenTemplate(),
             protocolTemplate(),
-            assertElementState()
+            protocolWithEnum(),
+            turnSwitch(),
+            assertElementState(),
+            testFunc()
         ]
     }
     
     private static func tapElement() -> Snippet {
         return Snippet(
-            title: "Tap func",
+            title: "03. Tap func",
             description: "Tap element and return next screen.",
             content:
 """
@@ -47,7 +50,7 @@ func tap<#ElementName#>() -> <#ScreenName#> {
     
     private static func tapElementAtIndex() -> Snippet {
         return Snippet(
-            title: "Tap index func",
+            title: "04. Tap index func",
             description: "Tap element at index and return next screen.",
             content:
 """
@@ -67,7 +70,7 @@ func tap<#ElementQuery#>(index: Int = 0) -> <#ScreenName#> {
     
     private static func tapElementAtIndexGeneric() -> Snippet {
         return Snippet(
-            title: "Tap index func Generic",
+            title: "06. Tap index func Generic",
             description: "Tap element at index and returns a generic screen.",
             content:
 """
@@ -87,7 +90,7 @@ func tap<#ElementQuery#><T>(index: Int = 0, screen: T.Type) -> T where T: BaseSc
     
     private static func tapElementGeneric() -> Snippet {
         return Snippet(
-            title: "Tap func Generic",
+            title: "05. Tap func Generic",
             description: "Taps element and returns a generic screen.",
             content:
 """
@@ -107,7 +110,7 @@ func tap<#ElementName#><T>(screen: T.Type) -> T where T: BaseScreen {
     
     private static func assertExists() -> Snippet {
         return Snippet(
-            title: "Assert Exists func",
+            title: "09. Assert Exists func",
             description: "Asserts if the element exists. Returns self for chaining.",
             content:
 """
@@ -136,7 +139,7 @@ func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
     
     private static func assertExistsAtIndex() -> Snippet {
         return Snippet(
-            title: "Assert Exists at index func",
+            title: "10. Assert Exists at index func",
             description: "Asserts if the element at index exists. Returns self for chaining.",
             content:
 """
@@ -156,7 +159,7 @@ func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
 @discardableResult
 func assert<#ElementQuery#>Exists(index: Int = 0, expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#> at \\(index)", state: .exists, expected: result) {
-        <#elementQuery#>.assert(state: .exists, expected: result)
+        <#elementQuery#>.element(boundBy: index).assert(state: .exists, expected: result)
         return self
     }
 }
@@ -166,7 +169,7 @@ func assert<#ElementQuery#>Exists(index: Int = 0, expected result: Bool = true) 
     
     private static func assertIsEnabled() -> Snippet {
         return Snippet(
-            title: "Assert Enabled func",
+            title: "11. Assert Enabled func",
             description: "Asserts if the element is enabled. Returns self for chaining.",
             content:
 """
@@ -195,7 +198,7 @@ func assert<#ElementName#>IsEnabled(expected result: Bool = true) -> Self {
     
     private static func assertElementIsSelected() -> Snippet {
         return Snippet(
-            title: "Assert Selected func",
+            title: "12. Assert Selected func",
             description: "Asserts if the element is selected. Returns self for chaining.",
             content:
 """
@@ -222,20 +225,20 @@ func assert<#ElementName#>IsSelected(expected result: Bool = true) -> Self {
         )
     }
     
-    private static func elementNameExistsXCT() -> Snippet {
+    private static func elementExistsXCT() -> Snippet {
         return Snippet(
-            title: "XCT verify Exists func",
+            title: "13. XCT verify Exists func",
             description: "Element exists to use with XCTAssert. Returns Bool.",
             content:
 """
 /// Asserts if the `<#elementName#>` exists.
 /// - parameter expected: `Bool`. The expected result, which is `true` by default.
-/// - returns: `Bool`. Returns `true` if the button's state matches the expected result, otherwise `false`.
+/// - returns: `Bool`. Returns `true` if the element's state matches the expected result, otherwise `false`.
 /// - warning: Use with `XCTAssertTrue`. If you want to assert that the element doesn't exist, set the expected result to `false`. This helps the test to run faster.
 /// - _Examples:_
 ///   - To verify the element exists:
 ///     ```swift
-///     XCTAssertTrue(<#screenName#>.<#elementName#>Exists()
+///     XCTAssertTrue(<#screenName#>.<#elementName#>Exists())
 ///     ```
 ///   - To verify the element doesn't exist:
 ///     ```swift
@@ -253,7 +256,7 @@ func <#elementName#>Exists(expected result: Bool = true) -> Bool {
     
     private static func enterText() -> Snippet {
         return Snippet(
-            title: "Enter Text func",
+            title: "07. Enter Text func",
             description: "Enters text in the text field.",
             content:
 """
@@ -274,7 +277,7 @@ func enter(<#someText#>: String) -> Self {
     
     private static func screenTemplate() -> Snippet {
         return Snippet(
-            title: "Screen Template",
+            title: "00. Screen Template",
             description: "Screen template for screen transition chaining.",
             content:
 """
@@ -322,6 +325,7 @@ final class <#ClassName#>: BaseScreen {
     ///     ```swift
     ///    <#screenName#>.assert<#ElementName#>Exists(expected: false)
     ///     ```
+    @discardableResult
     func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
         runActivity(element: "<#element description#>", state: .exists, expected: result) {
             <#elementName#>.assert(state: .exists, expected: result)
@@ -336,8 +340,61 @@ final class <#ClassName#>: BaseScreen {
     
     private static func protocolTemplate() -> Snippet {
         return Snippet(
-            title: "Protocol Template",
-            description: "Protocol template with enum argument (optional - remove if not needed) for screen transition chaining.",
+            title: "01. Protocol Template",
+            description: "Protocol template for screen transition chaining.",
+            content:
+"""
+protocol <#ProtocolName#>: ScreenActivitiesProtocol {
+    var screenName: String { get }
+    func tap<#ElementName#><T>(goTo screen: T.Type) -> T where T: BaseScreen
+    func assert<#elementName#>Exists(expected result: Bool) -> Self
+}
+
+extension <#ProtocolName#> {
+    var screenName: String {
+        String(describing: type(of: self))
+    }
+    
+    /// Tap the <#elementName#>
+    /// - parameter goTo: The name of the screen that is expected after tapping the element.
+    /// - returns: An instance of the screen indicated by the `goTo` parameter, representing either the next screen depending on the flow.
+    @discardableResult
+    func tap<#ElementName#><T>(goTo screen: T.Type) -> T where T: BaseScreen {
+        runActivity(.step, "Tap the `\\(<#elementName#>)`") {
+            BaseScreen.app.<#elementType#>[<#elementName#>].firstMatch.tap()
+            return T()
+        }
+    }
+    
+    /// Asserts if the `<#elementName#>` exists.
+    /// - parameter expected: `Bool`. The expected result, which is `true` by default.
+    /// - returns: Self. Returns self for the chaining purpose
+    /// - _Examples:_
+    ///   - To verify the element exists:
+    ///     ```swift
+    ///     screenName.assert<#elementName#>Exists()
+    ///     ```
+    ///   - To verify the element doesn't exist:
+    ///     ```swift
+    ///     screenName.assert<#elementName#>Exists(expected: false)
+    ///     ```
+    @discardableResult
+    func assert<#elementName#>Exists(expected result: Bool = true) -> Self {
+        runActivity(element: "<#element description#>", state: .exists, expected: result) {
+            <#elementName#>.assert(state: .exists, expected: result)
+        }
+        return self
+    }
+}
+
+"""
+        )
+    }
+    
+    private static func protocolWithEnum() -> Snippet {
+        return Snippet(
+            title: "02. Protocol with enum",
+            description: "Protocol template with enum argument for screen transition chaining.",
             content:
 """
 protocol <#ProtocolName#>: ScreenActivitiesProtocol {
@@ -392,7 +449,7 @@ extension <#ProtocolName#> {
     
     private static func assertElementState() -> Snippet {
         return Snippet(
-            title: "Assert Element State func",
+            title: "14. Assert Element State func",
             description: "Asserts the element state. Returns self for chaining.",
             content:
 """
@@ -407,13 +464,49 @@ extension <#ProtocolName#> {
 ///     ```
 ///   - To verify the element doesn't exist:
 ///     ```swift
-///     <#screenName#>.assert<#elementName#>(state: ElementState, expected: false))
+///     <#screenName#>.assert<#elementName#>(state: ElementState, expected: false)
 ///     ```
 @discardableResult
 func assert<#elementName#>(state: ElementState, expected result: Bool = true) -> Self {
     runActivity(element: "<#element description#>", state: state, expected: result) {
-        <#elementName#>.assert(state: state, result: result)
+        <#elementName#>.assert(state: state, expected: result)
         return self
+    }
+}
+"""
+        )
+    }
+    
+    private static func turnSwitch() -> Snippet {
+        return Snippet(
+            title: "08. Turn switch func",
+            description: "Turns switch on/off.",
+            content:
+"""
+/// Turn the <#switchName#> to the state selected from the `SwitchState` enum
+/// - parameter state: `SwitchState`. An enum to select the state from
+/// - returns: Self. Returns self for the chaining purpose
+@discardableResult
+func turn<#switchName#>(_ state: SwitchState) -> Self {
+    runActivity(.step, "Turn the `<#switchName#>` `\\(state.rawValue)`") {
+        <#switchName#>.turnSwitch(state: state)
+        return self
+    }
+}
+"""
+        )
+    }
+    
+    
+    private static func testFunc() -> Snippet {
+        return Snippet(
+            title: "15. Test func",
+            description: "Test function",
+            content:
+"""
+func test<#TestName#>() {
+    runActivity(named: "<#Test Description#>") {
+        
     }
 }
 """

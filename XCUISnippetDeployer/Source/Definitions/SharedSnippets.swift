@@ -11,7 +11,6 @@ class SharedSnippets {
     static func getAll() -> [Snippet] {
         return [
             documentation(),
-            testFunc(),
             stepActivity(),
             assertElementStateActivity(),
             assertEqualToActivity()
@@ -25,7 +24,6 @@ class SharedSnippets {
             content:
 """
 /// Summary text for documentation
-/// - parameter: <#Description#>
 /// - parameter <#parameterName#>: <#Description#>
 /// - returns: <#Return values#>
 /// - warning: <#Warning if any#>
@@ -37,25 +35,10 @@ class SharedSnippets {
         )
     }
     
-    private static func testFunc() -> Snippet {
-        return Snippet(
-            title: "Test func",
-            description: "Test function",
-            content:
-"""
-func test<#TestName#>() {
-    runActivity(named: "<#Test Description#>") {
-        
-    }
-}
-"""
-        )
-    }
-    
     private static func stepActivity() -> Snippet {
         return Snippet(
             title: "Activity: Step",
-            description: "Step Activity to describe interacions with UI Elements",
+            description: "Step Activity to describe interactions with UI Elements",
             content:
 """
 runActivity(.step, "<#Step description#>") {
