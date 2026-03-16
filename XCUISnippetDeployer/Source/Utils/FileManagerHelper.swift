@@ -23,6 +23,10 @@ class FileManagerHelper {
                     return
                 }
                 removeLegacySnippets(in: xcodeSnippetsDirectory, matching: snippets)
+                guard !hasLegacySnippets(in: xcodeSnippetsDirectory, matching: snippets) else {
+                    print("Failed to remove all legacy snippets. Close Xcode and try again, or use option 4 to delete them manually.")
+                    return
+                }
                 print("Legacy snippets deleted. Proceeding with deployment...")
             }
 
@@ -65,19 +69,22 @@ class FileManagerHelper {
 
             for snippet in snippets {
                 let prefixedTitle = "\(pattern.titlePrefix) \(snippet.title)"
-                if let existingFile = existingSnippets[prefixedTitle] {
-                    try FileManager.default.removeItem(at: existingFile)
-                    print("Removed existing snippet: \"\(prefixedTitle)\"")
+                do {
+                    let uuid = UUID().uuidString
+                    let fileName = "\(uuid).codesnippet"
+                    let fileURL = xcodeSnippetsDirectory.appendingPathComponent(fileName)
+
+                    let snippetDictionary: [String: Any] = createSnippetDictionary(snippet: snippet, uuid: uuid, pattern: pattern)
+                    let data = try PropertyListSerialization.data(fromPropertyList: snippetDictionary, format: .xml, options: 0)
+                    try data.write(to: fileURL)
+
+                    if let existingFile = existingSnippets[prefixedTitle] {
+                        try FileManager.default.removeItem(at: existingFile)
+                    }
+                    print("Snippet \"\(prefixedTitle)\" updated at \(fileURL.path).")
+                } catch {
+                    print("Failed to update snippet \"\(prefixedTitle)\": \(error.localizedDescription)")
                 }
-
-                let uuid = UUID().uuidString
-                let fileName = "\(uuid).codesnippet"
-                let fileURL = xcodeSnippetsDirectory.appendingPathComponent(fileName)
-
-                let snippetDictionary: [String: Any] = createSnippetDictionary(snippet: snippet, uuid: uuid, pattern: pattern)
-                let data = try PropertyListSerialization.data(fromPropertyList: snippetDictionary, format: .xml, options: 0)
-                try data.write(to: fileURL)
-                print("Snippet \"\(prefixedTitle)\" updated at \(fileURL.path).")
             }
         } catch {
             print("Failed to update snippets for pattern \(pattern.rawValue): \(error.localizedDescription)")
@@ -124,11 +131,15 @@ class FileManagerHelper {
         }
 
         removeLegacySnippets(in: xcodeSnippetsDirectory, matching: snippets)
-        print("Legacy snippets for '\(pattern.rawValue)' have been deleted. You can now use option 1 to deploy v2.0 snippets.")
+        if hasLegacySnippets(in: xcodeSnippetsDirectory, matching: snippets) {
+            print("Failed to remove all legacy snippets for '\(pattern.rawValue)'. Close Xcode and try again.")
+        } else {
+            print("Legacy snippets for '\(pattern.rawValue)' have been deleted. You can now use option 1 to deploy v2.0 snippets.")
+        }
     }
 
     private static func hasLegacySnippets(in directory: URL, matching snippets: [Snippet]) -> Bool {
-        let titles = Set(snippets.map { $0.title })
+        let titles = legacyTitleSet(for: snippets)
         guard let files = try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil, options: []) else { return false }
         return files.filter { $0.pathExtension == "codesnippet" }.contains { file in
             guard let data = try? Data(contentsOf: file),
@@ -138,8 +149,21 @@ class FileManagerHelper {
         }
     }
 
+    private static func legacyTitleSet(for snippets: [Snippet]) -> Set<String> {
+        let allTitleVariants: [String] = snippets.flatMap { snippet -> [String] in
+            let numbered = snippet.title
+            let unnumbered = snippet.title.replacingOccurrences(of: "^\\d+\\.\\s*", with: "", options: .regularExpression)
+            let variants = numbered == unnumbered ? [numbered] : [numbered, unnumbered]
+            let prefixed = SnippetPattern.allCases.flatMap { pattern in
+                variants.map { "\(pattern.titlePrefix) \($0)" }
+            }
+            return variants + prefixed
+        }
+        return Set(allTitleVariants)
+    }
+
     private static func removeLegacySnippets(in directory: URL, matching snippets: [Snippet]) {
-        let titles = Set(snippets.map { $0.title })
+        let titles = legacyTitleSet(for: snippets)
         guard let files = try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil, options: []) else { return }
         for file in files where file.pathExtension == "codesnippet" {
             guard let data = try? Data(contentsOf: file),
@@ -147,8 +171,12 @@ class FileManagerHelper {
                   let title = plist["IDECodeSnippetTitle"] as? String,
                   plist["XCUIBuilderPattern"] == nil,
                   titles.contains(title) else { continue }
-            try? FileManager.default.removeItem(at: file)
-            print("Deleted legacy snippet: \"\(title)\"")
+            do {
+                try FileManager.default.removeItem(at: file)
+                print("Deleted legacy snippet: \"\(title)\"")
+            } catch {
+                print("Failed to delete legacy snippet \"\(title)\": \(error.localizedDescription)")
+            }
         }
     }
 

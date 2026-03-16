@@ -233,7 +233,7 @@ func turn<#switchName#>(_ state: SwitchState) -> Self {
             description: "Enters text into the text field which uses enum rawValue as a part of its locator",
             content:
 """
-/// Enter the `text` into the text field selected from`<#enumName#>` enum.
+/// Enter the `text` into the text field selected from the `<#enumName#>` enum.
 /// - parameter text: String.
 /// - parameter textField: `<#enumName#>`. An enum to select the text field from
 /// - returns: Self. Returns self for the chaining purpose
@@ -300,7 +300,7 @@ final class <#ClassName#>: BaseScreen {
     ///     ```swift
     ///        .assert<#ElementName#>Exists(expected: false)
     ///     ```
-    @discardableResult    
+    @discardableResult
     func assert<#ElementName#>Exists(expected result: Bool = true) -> Self {
         runActivity(element: "<#element description#>", state: .exists, expected: result) {
             <#elementName#>.assert(state: .exists, expected: result)
@@ -333,7 +333,7 @@ extension <#ProtocolName#> where Self: BaseScreen {
         String(describing: type(of: self))
     }
     
-    /// Tap the <#elementName#>
+    /// Tap the `<#elementName#>`
     /// - parameter <#argName#>: `<#EnumName#>`. The enum to select the <#elementName#> from
     /// - returns: Self. Returns self for the chaining purpose
     @discardableResult
@@ -344,11 +344,12 @@ extension <#ProtocolName#> where Self: BaseScreen {
         }
     }
     
-    /// Asserts if the `<#elementName#>`  <#elementType#> exists.
+    /// Asserts if the `<#elementName#>` <#elementType#> exists.
     /// - parameter <#argName#>: `<#EnumName#>`. The enum to select the tab from
     /// - parameter expected: `Bool`. The expected result, which is `true` by default.
     /// - returns: Self. Returns self for the chaining purpose
     /// - _Examples:_
+    ///   - To verify the element exists:
     ///     ```swift
     ///         .assert<#elementName#>Exists(.<#argName#>)
     ///     ```
@@ -389,7 +390,7 @@ extension <#ProtocolName#> where Self: BaseScreen {
         String(describing: type(of: self))
     }
     
-    /// Tap the <#elementName#>
+    /// Tap the `<#elementName#>`
     /// - returns: Self. Returns self for the chaining purpose
     @discardableResult
     func tap<#ElementName#>() -> Self {
@@ -535,7 +536,7 @@ func test<#TestName#>() {
             content:
 """
 /// Taps a button selected from the `<#enumName#>` enum
-/// - parameter button: <#enumName#>. An enum to select a button from
+/// - parameter button: `<#enumName#>`. An enum to select a button from
 /// - returns: Self. Returns self for the chaining purpose
 @discardableResult
 func tap(_ button: <#enumName#>) -> Self {

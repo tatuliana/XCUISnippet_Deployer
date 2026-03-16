@@ -168,6 +168,14 @@ Contributions are welcome! If you have suggestions or want to add new snippet pa
 
 ## Release Notes
 
+### v2.0.1
+- Fixed legacy snippet removal silently failing — old snippets could remain in Xcode even after confirming deletion.
+- Added post-removal verification in both Deploy and Delete Legacy — aborts with a clear message if any files couldn't be removed (e.g. Xcode has them locked).
+- Fixed `Update` — new file is now written before the old one is deleted, preventing data loss on write failure.
+- Fixed `Update` — one snippet failure no longer aborts the entire update; remaining snippets continue updating independently.
+- Improved legacy title detection — now matches snippets saved with or without number prefix (e.g. both `"03. Tap func"` and `"Tap func"`) and with or without pattern prefixes.
+- Fixed doc comment issues in SC and STC snippets: missing backticks, missing periods on tap summaries, corrected `assertElementState` examples.
+
 ### v2.0
 - Added **Update** option: replaces existing snippets that share the same title with the latest version.
 - Added **Delete** option: removes previously deployed snippets via the CLI.
